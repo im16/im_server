@@ -1,0 +1,43 @@
+// express package setting to use express.
+var express = require('express');
+var app = express();
+app.set('port', process.env.PORT||8000);
+
+// bodyParser pakage setting to parse a body.
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false}));
+
+// user module loading 
+var module = require('./module/functions');
+
+//generate api
+app.get('/api/register_member',function(req,res){
+        res.send(module.register_member(req));
+});
+app.get('/api/find_members/random',function(req,res){
+	body = new Object();
+	body.id =' 1';
+	module.find_members_random(body,res);
+
+});
+
+// 404,500 error handling 
+app.use(function(req,res){
+        res.type('text/plain');
+        res.status(404);
+        res.send('404 NOT FOUND');
+});
+
+app.use(function(err,req,res,next){
+        console.error(err.stack);
+        res.type('text/plain');
+        res.status(500);
+        res.send('500  Server Erro');
+});
+
+
+app.listen(app.get('port'),function(){
+        console.log('express started on http://52.69.46.152 '+ app.get('port') + '; press Ctrl -c to terminate');
+});
+
